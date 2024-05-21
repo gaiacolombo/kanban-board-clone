@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Aggiungi colonna</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+	crossorigin="anonymous">
+<!--   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+<!--   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+<!--   <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script> -->
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script
+	src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.js"></script>
+</head>
+<body>
+	<div class="container">
+		<header class="d-flex justify-content-center py-3">
+			<ul class="nav nav-pills">
+				<li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+				<li class="nav-item"><a href="/aggiungiColonna/"
+					class="nav-link active" aria-current="page">Aggiungi colonna</a></li>
+				<li class="nav-item"><a href="/archiviate/" class="nav-link">Archiviate</a></li>
+			</ul>
+		</header>
+		<h4 class="mb-3">Aggiungi colonna</h4>
+		<form id="myForm" action="/aggiungiColonna/" method="POST"
+			class="needs-validation" novalidate="" name="myForm">
+			<div class="row g-3">
+				<div class="col-12">
+					<label for="titolo" class="form-label">Titolo</label> <input
+						type="text" class="form-control" id="titolo" name="titolo">
+				</div>
+				<button class="w-100 btn btn-primary btn-lg"
+					onClick="aggiungiColonna()" type="submit">Aggiungi colonna</button>
+			</div>
+		</form>
+	</div>
+	</br>
+	</br>
+<script src="/docs/5.0/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+	crossorigin="anonymous"></script>
+<script>
+$(document).ready(function() {
+	$("#myForm").validate({
+	    rules: {
+	        titolo: {
+	            required: true
+	        }
+	    },
+	    messages: {
+            titolo : "Questo campo non può essere vuoto",
+       }
+    });
+})
+</script>
+</body>
+</html>

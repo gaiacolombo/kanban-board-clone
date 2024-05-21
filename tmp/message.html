@@ -1,0 +1,501 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Home</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<!-- <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=9OC1Tm30u3BWiO0IccmunEmwcxJ_-JA0Tw7WcJzUzAUebAKfJx_iwa116J_YfLX9areVjWvQs8T92dPyYtiJPXlm_Q-CSir84016REvgUNCjSuXXd25W08ae43Nryn3-tHIRrQ-T7WP1IbNjfPtAiQ" charset="UTF-8"></script> -->
+<!-- <script src="jquery-1.7.2.min.js"></script> -->
+
+<!-- 	AGGIORNATO I CARICAMENTI, LI HO MESSI COME LI HA CATTA -->
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<!-- <script src="jquery.validate.min.js"></script> -->
+<!-- <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.14.0/jquery.validate.min.js"></script> -->
+<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.js"></script>
+
+</head>
+<body>
+  <div class="container overflow-hidden">
+    <header class="d-flex justify-content-center py-3">
+      <ul class="nav nav-pills">
+        <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
+        <li class="nav-item"><a href="/aggiungiColonna/" class="nav-link">Aggiungi colonna</a></li>
+        <li class="nav-item"><a href="/archiviate/" class="nav-link">Archiviate</a></li>
+      </ul>
+    </header>
+    <div class="row gx-5" id="divDaCompletare">
+    </div>
+  </div>
+
+<!--MODAL MODIFICA TILE-->
+<div class="modal fade" id="ModalModificaTile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modifica tile</h5>
+      </div>
+      <div class="modal-body">
+          <input type="hidden" class="form-control" name="id" value="" id="hiddenIdModificaTile" hidden>
+            <div class="row g-3">
+              <div class="col-12">
+                <label for="titolo" class="form-label">Colonna in cui spostare il tile</label>
+                <select id="nuovaColonna" name="nuovaColonna" class="form-select" aria-label="Default select example" value="">
+                </select>
+              </div>
+
+              <div class="col-12">
+                <label for="titolo" class="form-label">Titolo</label>
+                <input type="text" class="form-control" id="titoloModifica" name="titolo" placeholder="" value="">
+              </div>
+
+              <div class="col-12">
+                <label for="autore" class="form-label">Autore</label>
+                <input type="text" class="form-control" id="autoreModifica" name="autore" placeholder="" value="">
+              </div>
+
+              <div class="my-3">
+                <label for="tipoContenutoModifica" class="form-label">Tipo contenuto</label>
+                <div class="form-check">
+                  <input id="testualeModifica" name="tipoContenutoModifica" value="testuale" type="radio" class="form-check-input" required onchange="modificaTesto()">
+                  <label class="form-check-label" for="testualeModifica">Testuale</label>
+                </div>
+                <div class="form-check">
+                  <input id="multimedialeModifica" name="tipoContenutoModifica" value="multimediale" type="radio" class="form-check-input" required onchange="modificaImmagine()">
+                  <label class="form-check-label" for="multimedialeModifica">Multimediale</label>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="testo" class="form-label">Testo</label>
+                <textarea class="form-control" name="contenuto" id="testoModifica" rows="3"></textarea>
+              </div>
+
+		       <div class="mb-3">
+	              	<form action="/immagine/" method="POST" id="formModificaImmagine" enctype="multipart/form-data">
+		                <label for="immagine" class="form-label">Immagine</label>
+		                <input class="form-control" type="file" name="file" id="immagineModifica" disabled>
+	                </form>
+		       </div>
+
+              <div class="my-3" hidden>
+                  <label for="tipoMessaggio" class="form-label">Tipo messaggio</label>
+                <div class="form-check">
+                  <input id="organizzativoModifica" name="tipoMessaggio" value="organizzativo" type="radio" class="form-check-input" required="">
+                  <label class="form-check-label" for="organizzativoModifica">Organizzativo</label>
+                </div>
+                <div class="form-check">
+                  <input id="informativoModifica" name="tipoMessaggio" value="informativo" type="radio" class="form-check-input" required="">
+                  <label class="form-check-label" for="informativoModifica">Informativo</label>
+                </div>
+              </div>
+
+              <button class="w-100 btn btn-primary btn-lg" id="bottoneModificaTile">Modifica tile</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--MODAL AGGIUNGI TILE-->
+<div class="modal fade" id="ModalAggiungiTile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Aggiungi tile</h5>
+      </div>
+      <form id="prova">
+      <div class="modal-body">
+          <input type="hidden" class="form-control" name="colonna" value="" id="hiddenIdAggiungiTile" hidden>
+              <div class="row g-3">
+
+                <div class="col-12">
+                  <label for="titolo" class="form-label">Titolo</label>
+                  <input type="text" class="form-control" id="titoloAggiungi" name="titoloAggiungi" placeholder="" value="" required>
+                </div>
+
+                <div class="col-12">
+                  <label for="autore" class="form-label">Autore</label>
+                  <input type="text" class="form-control" id="autoreAggiungi" name="autoreAggiungi" placeholder="" value="" required>
+                </div>
+
+                <div class="my-3"> <!-- onchange="aggiungiTestoImmagine()" -->
+                  <label for="tipoContenutoAggiungi" class="form-label">Tipo contenuto</label>
+                  <div class="form-check">
+                    <input id="testuale" name="tipoContenutoAggiungi" value="testuale" type="radio" class="form-check-input" required checked onchange="aggiungiTesto()">
+                    <label class="form-check-label" for="testuale">Testuale</label>
+                  </div>
+                  <div class="form-check">
+                    <input id="multimediale" name="tipoContenutoAggiungi" value="multimediale" type="radio" class="form-check-input" required onchange="aggiungiImmagine()">
+                    <label class="form-check-label" for="multimediale">Multimediale</label>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="testo" class="form-label">Testo</label>
+                  <textarea class="form-control" name="contenutoAggiungi" id="testoAggiungi" rows="3"></textarea>
+                </div>
+
+ 				<div class="mb-3">
+	              <form action="" method="POST" id="formAggiungiImmagine" enctype="multipart/form-data">
+	                <label for="immagine" class="form-label">Immagine</label>
+	                <input class="form-control" type="file" name="file" id="immagineAggiungi" disabled>
+	              </form>
+ 				</div>
+
+                <div class="my-3">
+                  <label for="tipoMessaggio" class="form-label">Tipo messaggio</label>
+                  <div class="form-check">
+                    <input id="organizzativo" name="tipoMessaggio" value="organizzativo" type="radio" class="form-check-input" required checked>
+                    <label class="form-check-label" for="organizzativo">Organizzativo</label>
+                  </div>
+                  <div class="form-check">
+                    <input id="informativo" name="tipoMessaggio" value="informativo" type="radio" class="form-check-input" required>
+                    <label class="form-check-label" for="informativo">Informativo</label>
+                  </div>
+                </div>
+
+                <button class="w-100 btn btn-primary btn-lg" id="bottoneAggiungiTile">Aggiungi tile</button>
+              </div>
+      </div>
+      </form> 
+    </div>
+  </div>
+</div>
+
+
+
+<!--MODAL MODIFICA COLONNA-->
+<div class="modal fade" id="ModalModificaColonna" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modifica colonna</h5>
+      </div>
+      <div class="modal-body">
+        <form action="/modificaTitoloColonna" method="POST" class="needs-validation" novalidate="" name="myForm">
+          <input type="hidden" class="form-control" name="id" value="" id="hiddenIdModificaColonna" hidden>
+            <div class="row g-3">
+              <div class="col-12">
+                <label for="titolo" class="form-label">Titolo</label>
+                <input type="text" class="form-control" id="titolo" name="titoloNuovo" placeholder="">
+              </div>
+              <button class="w-100 btn btn-primary btn-lg" type="submit" id="bottoneModificaTitoloColonna">Modifica titolo colonna</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- 	DA CONTROLLARE SE ERANO UTILI -->
+
+<!-- <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=9OC1Tm30u3BWiO0IccmunEmwcxJ_-JA0Tw7WcJzUzAUebAKfJx_iwa116J_YfLX9areVjWvQs8T92dPyYtiJPXlm_Q-CSir84016REvgUNCjSuXXd25W08ae43Nryn3-tHIRrQ-T7WP1IbNjfPtAiQ" charset="UTF-8"></script> -->
+
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" -->
+<!--     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" -->
+<!--     crossorigin="anonymous"></script> -->
+<!-- <script -->
+<!--     src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" -->
+<!--     type="text/javascript"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script>
+$("#bottoneModificaTile").click(function() {
+	if($('input[name=tipoContenutoModifica]:checked').val() == "multimediale"){
+		$.post("http://localhost:8080/modificaTile",
+                {
+					id : $("#hiddenIdModificaTile").val(),
+					idNuovaColonna : $("#nuovaColonna").val(),
+                    titolo : $("#titoloModifica").val(),
+                    autore : $("#autoreModifica").val(),
+                    tipoContenuto : "multimediale",
+                    tipoMessaggio : $('input[name=tipoMessaggio]:checked').val(),
+                    contenuto : ""
+                },
+                function(id) {
+                	if($('#immagineModifica').val().split('\\').pop() === "") {
+						location.reload();
+                	}
+                	else {
+	                    $("#formModificaImmagine").attr("action", "/immagine/" + id + "/");
+	                    $("#formModificaImmagine").submit();
+                	}
+                }
+            )
+	}
+	else{
+		$.post("http://localhost:8080/modificaTile",
+                {
+            		id : $("#hiddenIdModificaTile").val(),
+            		idNuovaColonna : $("#nuovaColonna").val(),
+                    titolo : $("#titoloModifica").val(),
+                    autore : $("#autoreModifica").val(),
+                    tipoContenuto : "testuale",
+                    tipoMessaggio : $('input[name=tipoMessaggio]:checked').val(),
+                    contenuto : $("#testoModifica").val() 
+                },
+                function(id) {
+                	location.reload();
+                }
+            )
+	}
+})
+
+// 	DA QUI A 322 HO CAMBIATO COSE
+$("#bottoneAggiungiTile").click(function() {
+	  $("#prova").validate({
+			
+	                rules: {
+	                    titoloAggiungi: {
+	                        required: true
+	                    },
+
+	                    autoreAggiungi: {
+	                        required: true
+	                    },
+
+	                    contenutoAggiungi: {
+	                        required: true
+	                    },
+
+	                    file:{
+	                        required : true
+	                    }
+	            },
+	                messages: {
+	                    titoloAggiungi : "titolo richiesto",
+	                    autoreAggiungi: "autore richiesto",
+	                    contenutoAggiungi: "contenuto richiesto",
+	                    file: "immagine richiesta"
+	                }
+
+	            });
+	  
+	 
+	
+	 if(($('input[name=titoloAggiungi]').val() === "") || ($('input[name=autoreAggiungi]').val() === "")){		 
+// 		 console.log("manca qualcosa");
+// 		 console.log($('input[name=file]').val() === "");
+	  }else{	  
+		  // funzionerebbe, se un immagine caricata sarebbe !== nulla, ma non è cosi. probabilmente è la mia versione non correttamente aggiornata
+	  if(($('input[name=tipoContenutoAggiungi]:checked').val() === "multimediale") /*&& ($('input[name=file]').val() !== "")*/){
+
+		$.post("http://localhost:8080/aggiungiTile",
+                {
+					id : $("#hiddenIdAggiungiTile").val(),
+                    titolo : $("#titoloAggiungi").val(),
+                    autore : $("#autoreAggiungi").val(),
+                    tipoContenuto : "multimediale",
+                    tipoMessaggio : $('input[name=tipoMessaggio]:checked').val(),
+                    contenuto : ""
+                },
+                function(id) {
+                	if($('#immagineAggiungi').val().split('\\').pop() === "") {
+                		console.log(":)");
+						location.reload();
+                	}
+                	else {
+	                    $("#formAggiungiImmagine").attr("action", "/immagine/" + id + "/");
+	                    $("#formAggiungiImmagine").submit();
+                	}
+                }
+            )
+	}
+	 
+	else if($('textarea[name=contenutoAggiungi]').val() !== ""){
+		
+		console.log($("#autoreAggiungi").val());
+		$.post("http://localhost:8080/aggiungiTile",
+                {
+            		id : $("#hiddenIdAggiungiTile").val(),
+                    titolo : $("#titoloAggiungi").val(),
+                    autore : $("#autoreAggiungi").val(),
+                    tipoContenuto : "testuale",
+                    tipoMessaggio : $('input[name=tipoMessaggio]:checked').val(),
+                    contenuto : $("#testoAggiungi").val() 
+                },
+                function() {
+                	location.reload();
+                }
+            )
+	}
+  }
+})
+
+$(document).ready(function(){
+// 	console.log($('input[name=tipoContenutoAggiungi]:checked').val() == "multimediale");
+	  
+	  
+  $.get("http://localhost:8080/repoC/", function(arr) {
+
+  var out = "";
+  for (var i = 0; i < arr.length; i++) {
+	  if(arr[i].stato==="in_corso") {
+      out += "<div class=\"col\" style=\"min-width:300px\">" +
+                "<div class=\"p-3 border bg-light\">" +
+                "<div  id=\"titoloColonna\" class=\"p-3 border bg-light link-primary text-uppercase\" text-align=\"center\">" +
+                arr[i].titolo + "</br>" +
+                "<button type=\"button\" class=\"btn btn-primary\"  title=\"Elimina colonna\" value=\"eliminaColonna\" onclick=\"eliminaColonna('" + arr[i].id + "')\">" +
+                  "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-x-lg\" viewBox=\"0 0 16 16\">" +
+                     "<path d=\"M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z\"/>" +
+                   "</svg>" +
+                "</button>" +
+                 "<button type=\"button\" class=\"btn btn-outline-primary\" title=\"Modifica colonna\" value=\"modificaColonna\" onclick=\"showModalModificaColonna('" + arr[i].id + "')\">" +
+                  " <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-pencil-square\" viewBox=\"0 0 16 16\">" +
+                   "   <path d=\"M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z\"/>" +
+                    "  <path fill-rule=\"evenodd\" d=\"M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z\"/>" +
+                    "</svg> " +
+                 "</button> " +
+                 "<button type=\"button\" class=\"btn btn-primary\" title=\"Cambia stato colonna\" value=\"cambia stato colonna\" onclick=\"cambiaStatoColonna('" + arr[i].id + "')\">" +
+                  " <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-archive\" viewBox=\"0 0 16 16\">" +
+                   "   <path d=\"M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1V2zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5H2zm13-3H1v2h14V2zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z\"/>" +
+                    "</svg>" +
+                 "</button>" +
+                 "<button type=\"button\" class=\"btn btn-outline-primary\" title=\"Aggiungi tile\" value=\"aggiungiTile\" onclick=\"showModalAggiungiTile('" + arr[i].id + "')\">" +
+                  " <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-plus-lg\" viewBox=\"0 0 16 16\">" +
+                   "  <path d=\"M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z\"/>" +
+                   "</svg>" +
+                 "</button>" +
+               "</div>";
+     for (var j = 0; j < arr[i].tiles.length; j++) {
+       out += "<div class=\"row row-cols-1 row-cols-lg-1 g-2 g-lg-3\">" +
+        " <div class=\"col\">";
+        if(arr[i].tiles[j].tipoMessaggio==="informativo") {
+         out += "<div class=\"p-3 border bg-light\">";
+        }
+        else {
+         out += "<div class=\"p-3 border bg-primary text-white\">";
+        }
+        out += " <div id=\"titoloTile\" class=\"text-uppercase\"> " + arr[i].tiles[j].titolo + "&nbsp &nbsp";
+        if(arr[i].tiles[j].tipoMessaggio==="informativo") {
+         out += "<button type=\"button\" class=\"btn btn-primary border-white\"  title=\"Elimina tile\" value=\"eliminaTile\" onclick=\"eliminaTile('" + arr[i].tiles[j].id + "')\">";
+        }
+        else {
+         out += "<button type=\"button\" class=\"btn btn-primary bg-light text-primary\"  title=\"Elimina tile\" value=\"eliminaTile\" onclick=\"eliminaTile('" + arr[i].tiles[j].id + "')\">";
+        }
+        out += "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-x-lg\" viewBox=\"0 0 16 16\">" +
+              "<path d=\"M1.293 1.293a1 1 0 0 1 1.414 0L8 6.586l5.293-5.293a1 1 0 1 1 1.414 1.414L9.414 8l5.293 5.293a1 1 0 0 1-1.414 1.414L8 9.414l-5.293 5.293a1 1 0 0 1-1.414-1.414L6.586 8 1.293 2.707a1 1 0 0 1 0-1.414z\"/>" +
+              "</svg>" +
+              "</button>";
+        if(arr[i].tiles[j].tipoMessaggio==="informativo") {
+          out += "<button type=\"button\" class=\"btn btn-primary border-white\" title=\"Modifica tile\" value=\"modificaTile\" onclick=\"showModalModificaTile('" + arr[i].tiles[j].id + "', '" + arr[i].tiles[j].tipoContenuto + "', '" + arr[i].tiles[j].tipoMessaggio + "')\" data-toggle=\"modal\" data-target=\"#exampleModal\">";
+        }
+        else {
+          out += "<button type=\"button\" class=\"btn btn-primary bg-light text-primary\" title=\"Modifica tile\" value=\"modificaTile\" onclick=\"showModalModificaTile('" + arr[i].tiles[j].id + "', '" + arr[i].tiles[j].tipoContenuto + "', '" + arr[i].tiles[j].tipoMessaggio + "')\" data-toggle=\"modal\" data-target=\"#exampleModal\">";
+        }
+        out += " <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" class=\"bi bi-pencil-square\" viewBox=\"0 0 16 16\">" +
+                  "<path d=\"M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z\"/>" +
+                  "<path fill-rule=\"evenodd\" d=\"M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z\"/>" +
+               "</svg>" +
+            "</button>" +
+            "</div>" +
+           "<div id=\"autore\">Autore: " + arr[i].tiles[j].autore + "</div>" +
+         "</br>" +
+        "<div id=\"contenuto\">";
+        if(arr[i].tiles[j].tipoContenuto === "testuale") {
+           out += "<div id=\"testo\" class=\"border p-3\">" + arr[i].tiles[j].contenuto + "</div>";
+         }
+         else {
+           out += "<div id=\"immagine\"><img src=\"/immagine/" + arr[i].tiles[j].id + ".jpg/\" class=\"rounded\" width=200></div>";
+         }
+        out += "</div></div></div></div>";
+     }
+     out += "</div></br></div></div>";
+	  }
+  }
+  document.getElementById("divDaCompletare").innerHTML = out;
+
+  //opzioni tra cui scegliere per scegliere la colonna in cui spostare il tile (MODAL MODIFICA TILE)
+  var opzioni = "<option></option>";
+  for (i = 0; i < arr.length; i++) {
+    if(arr[i].stato==="in_corso")
+    opzioni += "<option value=\"" + arr[i].id + "\">" + arr[i].titolo + "</option>";
+  }
+  document.getElementById("nuovaColonna").innerHTML = opzioni;
+  });
+});
+
+function showModalModificaTile(id, tipoContenuto, tipoMessaggio){
+	switch (tipoContenuto) {
+	case "testuale":
+		document.getElementById("testualeModifica").checked = true;
+		modificaTesto();
+		break;
+	case "multimediale":
+		document.getElementById("multimedialeModifica").checked = true;
+		modificaImmagine();
+		break;
+	}
+	switch (tipoMessaggio) {
+	case "organizzativo":
+		document.getElementById("organizzativoModifica").checked = true;
+		break;
+	case "informativo":
+		document.getElementById("informativoModifica").checked = true;
+		break;
+	}
+	$("#hiddenIdModificaTile").val(id);
+	$('#ModalModificaTile').modal('show');
+}
+
+function showModalModificaColonna(id){
+	$("#hiddenIdModificaColonna").val(id);
+	$('#ModalModificaColonna').modal('show');
+}
+
+function showModalAggiungiTile(id){
+	$("#hiddenIdAggiungiTile").val(id);
+	$('#ModalAggiungiTile').modal('show');
+}
+
+function modificaTesto() {
+	document.getElementById("immagineModifica").disabled = true;
+	document.getElementById("testoModifica").disabled = false;
+}
+
+function modificaImmagine() {
+	document.getElementById("immagineModifica").disabled = false;
+	document.getElementById("testoModifica").disabled = true;
+}
+
+function aggiungiTesto() {
+	document.getElementById("immagineAggiungi").disabled = true;
+	document.getElementById("testoAggiungi").disabled = false;
+}
+
+function aggiungiImmagine() {
+	document.getElementById("immagineAggiungi").disabled = false;
+	document.getElementById("testoAggiungi").disabled = true;
+}
+
+function eliminaColonna(id) {
+	$.ajax({url : "http://localhost:8080/eliminaColonna/" + id + "/",
+        type : 'DELETE',
+        success : function(ritorno) {
+           location.reload();
+        }
+    });
+}
+
+function eliminaTile(id) {
+	$.ajax({url : "http://localhost:8080/eliminaTile/" + id + "/",
+        type : 'DELETE',
+        success : function() {
+           location.reload();
+        }
+    });
+}
+
+function cambiaStatoColonna(id) {
+	$.ajax({url : "http://localhost:8080/cambiaStatoColonna/" + id + "/",
+        type : 'POST',
+        success : function() {
+           location.reload();
+        }
+    });
+}
+</script>
+</body>
+</html>
